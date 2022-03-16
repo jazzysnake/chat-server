@@ -1,20 +1,20 @@
 package hu.fatbrains.plugins
 
+import UserDataSource
 import hu.fatbrains.data.UserDataSourceImpl
 import hu.fatbrains.data.model.User
 import io.ktor.application.*
-import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import kotlinx.coroutines.runBlocking
+import org.kodein.di.Kodein
+import org.kodein.di.generic.instance
 import org.koin.ktor.ext.inject
 import org.litote.kmongo.coroutine.CoroutineDatabase
 
-fun Application.configureRouting() {
-    val db by inject<CoroutineDatabase>()
-    val userDs = UserDataSourceImpl(db)
+fun Application.configureRouting(kodein: Kodein) {
+    val userDs by kodein.instance<UserDataSource>()
     routing {
-        // val userDs by inject<UserDataSourceImpl>()
         get("/") {
             call.respondText("THIS WORKS")
         }
