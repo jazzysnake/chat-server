@@ -1,0 +1,1 @@
+rootProject.name = "hu.fatbrains.chat-server"
