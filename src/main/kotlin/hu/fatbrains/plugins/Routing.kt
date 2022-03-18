@@ -1,34 +1,43 @@
 package hu.fatbrains.plugins
 
 import UserDataSource
-import hu.fatbrains.data.UserDataSourceImpl
 import hu.fatbrains.data.model.User
+import hu.fatbrains.data.model.UserSession
+import hu.fatbrains.routing.assignSession
+import hu.fatbrains.routing.authRoutes
 import io.ktor.application.*
+import io.ktor.auth.*
+import io.ktor.http.*
+import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import io.ktor.sessions.*
+import io.ktor.util.pipeline.*
 import kotlinx.coroutines.runBlocking
 import org.kodein.di.Kodein
 import org.kodein.di.generic.instance
-import org.koin.ktor.ext.inject
-import org.litote.kmongo.coroutine.CoroutineDatabase
+import org.mindrot.jbcrypt.BCrypt
 
 fun Application.configureRouting(kodein: Kodein) {
     val userDs by kodein.instance<UserDataSource>()
+    val application = this
     routing {
+        assignSession(application)
+        authRoutes(application,kodein)
         get("/") {
             call.respondText("THIS WORKS")
-        }
-        get("/register") {
-            runBlocking {
-                userDs.registerUser(User(name = "Pista"))
-            }
-            call.respondText("Reqistered Pista")
         }
         get("/user/pista") {
             runBlocking {
                 val Pista = userDs.getUserByName("Pista")
             call.respondText(Pista?.id ?: "Pista is not registered yet")
+            }
         }
+        authenticate("auth_session") {
+            get("/auth"){
+                call.respondText("Hello ${call.sessions.get<UserSession>()?.userId}")
+            }
         }
+
     }
 }

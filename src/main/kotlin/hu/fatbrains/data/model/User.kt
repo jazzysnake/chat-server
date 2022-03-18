@@ -7,4 +7,5 @@ data class User(
     @BsonId
     val id:String =ObjectId().toString(),
     val name:String,
+    val password:String,
 )

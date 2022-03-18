@@ -4,6 +4,7 @@ val logback_version: String by project
 val kmongo_version: String by project
 val koin_version: String by project
 val kodein_version: String by project
+val jbcrypt_version: String by project
 
 plugins {
     application
@@ -41,4 +42,8 @@ dependencies {
     implementation("org.litote.kmongo:kmongo-coroutine:$kmongo_version")
     //kodein
     implementation("org.kodein.di:kodein-di-generic-jvm:$kodein_version")
+    //auth
+    implementation("io.ktor:ktor-server-sessions:$ktor_version")
+    implementation("io.ktor:ktor-auth:$ktor_version")
+    implementation("org.mindrot:jbcrypt:$jbcrypt_version")
 }
