@@ -1,10 +1,11 @@
 package hu.fatbrains.plugins
 
 import UserDataSource
-import hu.fatbrains.data.model.User
 import hu.fatbrains.data.model.UserSession
 import hu.fatbrains.routing.assignSession
 import hu.fatbrains.routing.authRoutes
+import hu.fatbrains.routing.roomRoutes
+import hu.fatbrains.routing.userRoutes
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.http.*
@@ -24,6 +25,8 @@ fun Application.configureRouting(kodein: Kodein) {
     routing {
         assignSession(application)
         authRoutes(application,kodein)
+        userRoutes(application,kodein)
+        roomRoutes(application,kodein)
         get("/") {
             call.respondText("THIS WORKS")
         }
@@ -33,7 +36,7 @@ fun Application.configureRouting(kodein: Kodein) {
             call.respondText(Pista?.id ?: "Pista is not registered yet")
             }
         }
-        authenticate("auth_session") {
+        authenticate(AuthConfig.sessionAuth) {
             get("/auth"){
                 call.respondText("Hello ${call.sessions.get<UserSession>()?.userId}")
             }
