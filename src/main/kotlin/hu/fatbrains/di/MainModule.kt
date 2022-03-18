@@ -1,5 +1,7 @@
 package hu.fatbrains.di
 import UserDataSource
+import hu.fatbrains.data.RoomDataSource
+import hu.fatbrains.data.RoomDataSourceImpl
 import hu.fatbrains.data.UserDataSourceImpl
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
@@ -16,5 +18,9 @@ val kodein = Kodein {
     bind<UserDataSource>() with singleton {
         val db by kodein.instance<CoroutineDatabase>()
         UserDataSourceImpl(db)
+    }
+    bind<RoomDataSource>() with singleton {
+        val db by kodein.instance<CoroutineDatabase>()
+        RoomDataSourceImpl(db)
     }
 }
