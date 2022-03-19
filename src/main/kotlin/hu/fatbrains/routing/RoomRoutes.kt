@@ -39,9 +39,10 @@ fun Route.roomRoutes(application: Application,kodein: Kodein){
                     application.log.debug("Failed to create room with params: $params")
                     call.respondText("Invalid parameters")
                 }
-            }else
+            }else{
                 application.log.debug("Tried to create room with invalid params: $params")
                 call.respondText("Provide all params! (roomname,creator,members)")
+            }
         }
         // endpoint to get all rooms belonging to the logged-in user
         get("/rooms") { // session can't be null, or the route wouldn't be accessible
