@@ -10,7 +10,3 @@ data class Message(
     val type:MessageType,
     val timestamp:Long,
 )
-enum class MessageType {
-    TEXT,
-    REACTION,
-}
