@@ -27,6 +27,7 @@ class RoomDataSourceImpl(private val db:CoroutineDatabase) :RoomDataSource{
     }
 
     override suspend fun deleteRoom(id: String) {
-       rooms.deleteOneById(id)
+        //TODO delete all messages belonging to room
+        rooms.deleteOneById(id)
     }
 }
