@@ -42,11 +42,11 @@ fun Route.roomRoutes(application: Application,kodein: Kodein){
                 application.log.debug("Tried to create room with invalid params: $params")
                 call.respondText("Provide all params! (roomname,creator,members)")
         }
-        // endpoint to get all rooms belonging to the logged in user
+        // endpoint to get all rooms belonging to the logged-in user
         get("/rooms") { // session can't be null, or the route wouldn't be accessible
             call.respond(roomDs.getRoomsByMemberId(call.sessions.get<UserSession>()!!.userId.toString()))
         }
-        // endpoint to leave the room with the logged in user
+        // endpoint to leave the room with the logged-in user
         get("/leave/room"){
             val id = call.parameters["id"]
             // session can't be null, or the route wouldn't be accessible
