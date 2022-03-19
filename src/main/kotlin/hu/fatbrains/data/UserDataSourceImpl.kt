@@ -3,6 +3,7 @@ package hu.fatbrains.data
 import UserDataSource
 import com.mongodb.client.model.Filters.or
 import hu.fatbrains.data.model.User
+import org.litote.kmongo.`in`
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.eq
 import org.litote.kmongo.regex
@@ -35,10 +36,8 @@ class UserDataSourceImpl(db:CoroutineDatabase) : UserDataSource{
         return listOf()
     }
 
-    override suspend fun getUsersByIds(ids: List<String>): List<User?> {
-        return ids.map{
-            users.findOne(User::id eq it)
-        }
+    override suspend fun getUsersByIds(ids: List<String>): List<User> {
+        return users.find(User::id `in` ids).toList()
     }
 
 }

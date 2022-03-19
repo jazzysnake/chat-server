@@ -29,15 +29,16 @@ fun Route.roomRoutes(application: Application,kodein: Kodein){
             if(creatorId!=null&&memberIds!=null){
                 val creator = userDs.getUserById(creatorId)
                 val members = userDs.getUsersByIds(memberIds.split(","))
-                if(creator!=null&&members.isNotEmpty()&&!members.contains(null)){
-                    val roomMemberIds = (members+creator).map { it!!.id }
+                if(creator!=null&&members.isNotEmpty()){
+                    val roomMemberIds = (members+creator).map { it.id }
                     val room = Room(name = roomname, userIds = roomMemberIds, messageIds = listOf())
                     roomDs.createRoom(room)
                     application.log.info("Room ${room.id} created by user: ${creator.id}")
                     call.respondText("Created room $roomname")
+                }else{
+                    application.log.debug("Failed to create room with params: $params")
+                    call.respondText("Invalid parameters")
                 }
-                application.log.debug("Failed to create room with params: $params")
-                call.respondText("Invalid parameters")
             }else
                 application.log.debug("Tried to create room with invalid params: $params")
                 call.respondText("Provide all params! (roomname,creator,members)")
