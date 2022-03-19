@@ -76,5 +76,30 @@ fun Route.roomRoutes(application: Application,kodein: Kodein){
                 call.respondText("Provide a room id", status = HttpStatusCode.NotFound)
             }
         }
+        // endpoint to join the room with the provided id.(id param in get req)
+        get("/join/room") {
+            val id = call.parameters["id"]
+            val userid = call.sessions.get<UserSession>()!!.userId!!
+            if (id==null){
+                application.log.debug("User: $userid tried to join room without specifying its id")
+                call.respondText("Specify room id!", status = HttpStatusCode.BadRequest)
+            }else{
+                val room = roomDs.getRoomById(id)
+                if (room==null){
+                    application.log.debug("User: $userid tried to join nonexistent room")
+                    call.respondText("Room with id: $id doesn't exist!", status = HttpStatusCode.BadRequest)
+                }else{
+                    if (room.userIds.contains(userid)){
+                        application.log.debug("User: $userid tried to join room: ${room.id}, but is already a member.")
+                        call.respondText("Already a member of room: ${room.id}")
+                    }else{
+                        val modifiedRoom=room.copy(userIds = (room.userIds+userid))
+                        roomDs.updateRoom(modifiedRoom)
+                        application.log.info("User: $userid joined room: ${modifiedRoom.id}")
+                        call.respondText("Successfully joined room ${modifiedRoom.id}")
+                    }
+                }
+            }
+        }
     }
 }
