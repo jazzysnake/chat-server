@@ -18,14 +18,10 @@ fun Route.userRoutes(application: Application,kodein: Kodein){
             val params = call.receiveParameters()
             val username = params["username"].toString()
             val email = params["email"].toString()
-            val users = userDs.getUsersByEmailOrName(email, username).map { UserData(it.id,it.name,it.email) }
+            val users = userDs.getUsersByEmailOrName(email, username).map {
+                mapOf("id" to it.id,"name" to it.name,"email" to it.email)
+            }
             call.respond(users)
         }
     }
 }
-@kotlinx.serialization.Serializable
-data class UserData(
-    val id:String,
-    val name:String,
-    val email:String,
-)
