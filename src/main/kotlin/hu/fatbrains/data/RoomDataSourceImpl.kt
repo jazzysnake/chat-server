@@ -1,13 +1,11 @@
 package hu.fatbrains.data
 
 import hu.fatbrains.data.model.Room
-import org.bson.types.ObjectId
 import org.litote.kmongo.contains
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.eq
-import org.litote.kmongo.setTo
 
-class RoomDataSourceImpl(private val db:CoroutineDatabase) :RoomDataSource{
+class RoomDataSourceImpl(db:CoroutineDatabase) :RoomDataSource{
     private val rooms=db.getCollection<Room>()
 
     override suspend fun createRoom(room: Room) {

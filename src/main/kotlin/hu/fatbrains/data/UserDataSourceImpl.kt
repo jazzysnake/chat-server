@@ -3,12 +3,11 @@ package hu.fatbrains.data
 import UserDataSource
 import com.mongodb.client.model.Filters.or
 import hu.fatbrains.data.model.User
-import org.bson.types.ObjectId
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.eq
 import org.litote.kmongo.regex
 
-class UserDataSourceImpl(private val db:CoroutineDatabase) : UserDataSource{
+class UserDataSourceImpl(db:CoroutineDatabase) : UserDataSource{
     private val users = db.getCollection<User>()
     override suspend fun registerUser(user: User) {
         users.insertOne(user)
