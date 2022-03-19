@@ -21,6 +21,7 @@ fun Route.userRoutes(application: Application,kodein: Kodein){
             val users = userDs.getUsersByEmailOrName(email, username).map {
                 mapOf("id" to it.id,"name" to it.name,"email" to it.email)
             }
+            application.log.info("Requested users that have data containing name: $username, or email: $email")
             call.respond(users)
         }
     }
