@@ -9,7 +9,7 @@ import org.kodein.di.Kodein
 import org.kodein.di.generic.instance
 
 object AuthConfig{
-    val sessionAuth = "auth_session"
+    const val sessionAuth = "auth_session"
 }
 
 fun Application.configureAuthentication(kodein: Kodein){

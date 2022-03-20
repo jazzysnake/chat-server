@@ -30,6 +30,12 @@ class RoomDataSourceImpl(db:CoroutineDatabase) :RoomDataSource{
             rooms.replaceOne(Room::id eq room.id,room.copy(messageIds = (room.messageIds+messageId)))
     }
 
+    override suspend fun deleteMessageFromRoom(id: String, messageId: String) {
+        val room = rooms.findOneById(id)
+        if (room!=null)
+            rooms.replaceOne(Room::id eq room.id,room.copy(messageIds = (room.messageIds-messageId)))
+    }
+
     override suspend fun deleteRoom(id: String) {
         //TODO delete all messages belonging to room
         rooms.deleteOneById(id)

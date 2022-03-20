@@ -15,6 +15,7 @@ import org.mindrot.jbcrypt.BCrypt
 
 fun Route.authRoutes(application: Application,kodein: Kodein){
     val userDs by kodein.instance<UserDataSource>()
+    // Endpoint to log in with credentials provided as param. (email,password)
     post("/login"){
         val params = call.receiveParameters()
         val email = params["email"]
@@ -40,10 +41,10 @@ fun Route.authRoutes(application: Application,kodein: Kodein){
             }
         }else {
             application.log.info("Unsuccessful login attempt by user: ${user.id}")
-            call.respondText("Incorrect password")
+            call.respondText("Incorrect password", status = HttpStatusCode.Forbidden)
         }
-
     }
+    // Endpoint to register user with the provided params. (email, username, password)
     post("/register") {
         val params = call.receiveParameters()
         val username = params["username"]
@@ -71,10 +72,18 @@ fun Route.authRoutes(application: Application,kodein: Kodein){
             }
         }
     }
+    // Endpoint to log out
     get("/logout"){
         application.log.info("Logged out user: ${call.sessions.get<UserSession>()?.userId}")
         call.sessions.clear<UserSession>()
         call.respondText("Goodbye", status = HttpStatusCode.OK)
     }
-
+    // Endpoint to check login validity
+    get("/auth"){
+        val userid = call.sessions.get<UserSession>()?.userId
+        if (userid!=null)
+            call.respondText("Hello $userid", status = HttpStatusCode.OK)
+        else
+            call.respondText("Not Logged in", status = HttpStatusCode.Forbidden)
+    }
 }

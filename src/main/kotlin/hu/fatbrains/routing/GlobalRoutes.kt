@@ -6,6 +6,8 @@ import io.ktor.routing.*
 import io.ktor.sessions.*
 
 fun Route.assignSession(application: Application){
+    // Intercepts calls on all routes and assigns a session id to the caller
+    // if the caller currently has none, or it is not valid.
     intercept(ApplicationCallPipeline.Features) {
         if (call.sessions.get<UserSession>()==null){
             val session = UserSession(sessionId = generateSessionId(), userId = null)

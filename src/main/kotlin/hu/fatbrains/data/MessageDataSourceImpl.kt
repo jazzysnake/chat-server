@@ -12,6 +12,10 @@ class MessageDataSourceImpl(db:CoroutineDatabase) :MessageDataSource{
         messages.insertOne(message)
     }
 
+    override suspend fun getMessageById(id: String): Message? {
+        return messages.findOneById(id)
+    }
+
     override suspend fun getMessagesByIds(ids: List<String>): List<Message> {
         return messages.find(Message::id `in` ids).toList()
     }

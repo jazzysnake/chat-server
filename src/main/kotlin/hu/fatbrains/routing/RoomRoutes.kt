@@ -19,7 +19,7 @@ fun Route.roomRoutes(application: Application,kodein: Kodein){
     val userDs by kodein.instance<UserDataSource>()
     val roomDs by kodein.instance<RoomDataSource>()
     authenticate(AuthConfig.sessionAuth) {
-        // endpoint to create room
+        // Endpoint to create room
         // member ids are comma separated
         post("/create/room"){
             val params = call.receiveParameters()
@@ -34,21 +34,21 @@ fun Route.roomRoutes(application: Application,kodein: Kodein){
                     val room = Room(name = roomname, userIds = roomMemberIds, messageIds = listOf())
                     roomDs.createRoom(room)
                     application.log.info("Room ${room.id} created by user: ${creator.id}")
-                    call.respondText("Created room $roomname")
+                    call.respondText("Created room $roomname", status = HttpStatusCode.OK)
                 }else{
                     application.log.debug("Failed to create room with params: $params")
-                    call.respondText("Invalid parameters")
+                    call.respondText("Invalid parameters", status = HttpStatusCode.BadRequest)
                 }
             }else{
                 application.log.debug("Tried to create room with invalid params: $params")
-                call.respondText("Provide all params! (roomname,creator,members)")
+                call.respondText("Provide all params! (roomname,creator,members)", status = HttpStatusCode.BadRequest)
             }
         }
-        // endpoint to get all rooms belonging to the logged-in user
+        // Endpoint to get all rooms belonging to the logged-in user
         get("/rooms") { // session can't be null, or the route wouldn't be accessible
             call.respond(roomDs.getRoomsByMemberId(call.sessions.get<UserSession>()!!.userId.toString()))
         }
-        // endpoint to leave the room with the logged-in user
+        // Endpoint to leave the room with the logged-in user
         get("/leave/room"){
             val id = call.parameters["id"]
             // session can't be null, or the route wouldn't be accessible
@@ -66,7 +66,7 @@ fun Route.roomRoutes(application: Application,kodein: Kodein){
                         application.log.info("Left room: $id with user: $userId")
                         application.log.info("Only 1 user left in room: $id, room deleted")
                     }
-                    call.respondText("Left room ${room.name}")
+                    call.respondText("Left room ${room.name}", status = HttpStatusCode.OK)
                 }else{
                     application.log.debug("Tried to leave room: $id, but room doesn't exist")
                     call.respondText("Room not found", status = HttpStatusCode.BadRequest)
@@ -76,7 +76,7 @@ fun Route.roomRoutes(application: Application,kodein: Kodein){
                 call.respondText("Provide a room id", status = HttpStatusCode.NotFound)
             }
         }
-        // endpoint to join the room with the provided id.(id param in get req)
+        // Endpoint to join the room with the provided id.(id param in get req)
         get("/join/room") {
             val id = call.parameters["id"]
             val userid = call.sessions.get<UserSession>()!!.userId!!
@@ -91,12 +91,12 @@ fun Route.roomRoutes(application: Application,kodein: Kodein){
                 }else{
                     if (room.userIds.contains(userid)){
                         application.log.debug("User: $userid tried to join room: ${room.id}, but is already a member.")
-                        call.respondText("Already a member of room: ${room.id}")
+                        call.respondText("Already a member of room: ${room.id}", status = HttpStatusCode.BadRequest)
                     }else{
                         val modifiedRoom=room.copy(userIds = (room.userIds+userid))
                         roomDs.updateRoom(modifiedRoom)
                         application.log.info("User: $userid joined room: ${modifiedRoom.id}")
-                        call.respondText("Successfully joined room ${modifiedRoom.id}")
+                        call.respondText("Successfully joined room ${modifiedRoom.id}", status = HttpStatusCode.OK)
                     }
                 }
             }
