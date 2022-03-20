@@ -53,8 +53,8 @@ fun Route.chatRoutes(application: Application,kodein: Kodein){
                 }
             }
         }
-
-        webSocket("/chat/room/{id?}"){
+        webSocket("/chat/room/{id}"){
+            application.log.info(this.toString())
             val id = call.parameters["id"]
             val userId = call.sessions.get<UserSession>()!!.userId!!
             val user = userDs.getUserById(userId)!!//TODO chechk if exist
@@ -75,28 +75,45 @@ fun Route.chatRoutes(application: Application,kodein: Kodein){
                         if (channel==null){
                             channel = Channel(id,roomDs,messageDs)
                             channels.insertChannel(channel)
+                            application.log.info("Creating new channel for room: $id")
+                            application.log.info("Current number of channels: ${channels.getAllChannels().size}")
                         }
-                        channel.onJoin(
-                            Member(
-                                user,
-                                this
-                            )
-                        )
-                        incoming.consumeEach {frame ->
-                            when(frame){
-                                is Frame.Text -> channel.sendMessage(
-                                    Message(
-                                        roomId = id,
-                                        type = MessageType.TEXT,
-                                        timestamp = System.currentTimeMillis(),
-                                        content = frame.readText()
-                                    )
+                        try {
+                            channel.onJoin(
+                                Member(
+                                    user,
+                                    this
                                 )
+                            )
+                            incoming.consumeEach {frame ->
+                                if (frame is Frame.Text){
+                                    application.log.info("Sending message")
+                                    channel.sendMessage(
+                                        Message(
+                                            roomId = id,
+                                            type = MessageType.TEXT,
+                                            timestamp = System.currentTimeMillis(),
+                                            content = frame.readText()
+                                        )
+                                    )
+                                }
+                            }
+                        }catch (e: java.lang.Exception){
+                           application.log.error(e.toString())
+                        }finally {
+                            channel.tryDisconnect(userId)
+                            application.log.info("User: $userId disconnected from channel: $channel")
+                            application.log.info("Remaining channel size: ${channel.size()}")
+                            if (channel.size()<1){
+                                channels.deleteChannel(channel)
+                                application.log.info("Deleiting channel $channel")
+                                application.log.info("Current number of channels: ${channels.getAllChannels().size}")
                             }
                         }
                     }
                 }
             }
+
         }
     }
 }

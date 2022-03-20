@@ -12,7 +12,7 @@ class Channel(val roomId: String,private val roomDs: RoomDataSource,private val 
     private val members = ConcurrentHashMap<String,Member>()
 
     fun onJoin(member: Member){
-        if (members.containsKey(member.user.id)){
+        if (!members.containsKey(member.user.id)){
             members[member.user.id] = member
         }
     }
@@ -29,5 +29,8 @@ class Channel(val roomId: String,private val roomDs: RoomDataSource,private val 
         members[id]?.socket?.close()
         if (members.containsKey(id))
             members.remove(id)
+    }
+    fun size():Int{
+        return members.size
     }
 }

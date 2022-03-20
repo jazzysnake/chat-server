@@ -15,4 +15,8 @@ class ChannelStoreImpl :ChannelStore{
     override suspend fun findChannel(id: String):Channel? {
         return channels[id]
     }
+
+    override suspend fun getAllChannels(): List<Channel> {
+        return channels.values.toList()
+    }
 }
