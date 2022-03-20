@@ -7,6 +7,7 @@ import hu.fatbrains.plugins.AuthConfig
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.http.*
+import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.sessions.*
@@ -43,8 +44,8 @@ fun Route.chatRoutes(application: Application,kodein: Kodein){
             }
         }
         // Endpoint to delete a message with the specified id
-        post("/delete/message/{id}"){
-            val id = call.parameters["id"]
+        post("/delete/message"){
+            val id = call.receiveParameters()["id"]
             val userId = call.sessions.get<UserSession>()!!.userId
             if (id==null){
                 application.log.debug("User $userId tried to delete message without providing an Id")
