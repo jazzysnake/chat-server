@@ -49,7 +49,7 @@ fun Route.roomRoutes(application: Application,kodein: Kodein){
             call.respond(roomDs.getRoomsByMemberId(call.sessions.get<UserSession>()!!.userId.toString()))
         }
         // Endpoint to leave the room with the logged-in user
-        get("/leave/room"){
+        get("/leave/room/{id}"){
             val id = call.parameters["id"]
             // session can't be null, or the route wouldn't be accessible
             val userId = call.sessions.get<UserSession>()!!.userId.toString()
@@ -76,8 +76,8 @@ fun Route.roomRoutes(application: Application,kodein: Kodein){
                 call.respondText("Provide a room id", status = HttpStatusCode.NotFound)
             }
         }
-        // Endpoint to join the room with the provided id.(id param in get req)
-        get("/join/room") {
+        // Endpoint to join the room with the provided id.
+        get("/join/room/{id}") {
             val id = call.parameters["id"]
             val userid = call.sessions.get<UserSession>()!!.userId!!
             if (id==null){

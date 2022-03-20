@@ -14,6 +14,7 @@ plugins {
 
 group = "hu.fatbrains"
 version = "0.0.1"
+
 application {
     mainClass.set("hu.fatbrains.ApplicationKt")
 
