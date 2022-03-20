@@ -4,6 +4,7 @@ import hu.fatbrains.data.model.Room
 import org.litote.kmongo.contains
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.eq
+import org.litote.kmongo.setTo
 
 class RoomDataSourceImpl(db:CoroutineDatabase) :RoomDataSource{
     private val rooms=db.getCollection<Room>()
@@ -22,6 +23,12 @@ class RoomDataSourceImpl(db:CoroutineDatabase) :RoomDataSource{
 
     override suspend fun updateRoom(room: Room) {
         rooms.replaceOne(Room::id eq room.id,room)
+    }
+
+    override suspend fun addMessageToRoom(id: String, messageId: String) {
+        val room = rooms.findOneById(id)
+        if (room!=null)
+            rooms.replaceOne(room.id,room.copy(messageIds = (room.messageIds+messageId)))
     }
 
     override suspend fun deleteRoom(id: String) {

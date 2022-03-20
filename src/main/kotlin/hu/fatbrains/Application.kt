@@ -12,6 +12,6 @@ fun Application.module() {
     configureSerialization()
     configureSession()
     configureAuthentication(kodein)
-    configureRouting(kodein)
     configureSockets()
+    configureRouting(kodein)
 }

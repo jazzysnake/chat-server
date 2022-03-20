@@ -7,5 +7,6 @@ interface RoomDataSource {
     suspend fun getRoomById(id:String): Room?
     suspend fun getRoomsByMemberId(id:String):List<Room>
     suspend fun updateRoom(room:Room)
+    suspend fun addMessageToRoom(id:String,messageId:String)
     suspend fun deleteRoom(id: String)
 }

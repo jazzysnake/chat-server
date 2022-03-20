@@ -2,10 +2,7 @@ package hu.fatbrains.plugins
 
 import UserDataSource
 import hu.fatbrains.data.model.UserSession
-import hu.fatbrains.routing.assignSession
-import hu.fatbrains.routing.authRoutes
-import hu.fatbrains.routing.roomRoutes
-import hu.fatbrains.routing.userRoutes
+import hu.fatbrains.routing.*
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.http.*
@@ -27,8 +24,13 @@ fun Application.configureRouting(kodein: Kodein) {
         authRoutes(application,kodein)
         userRoutes(application,kodein)
         roomRoutes(application,kodein)
+        chatRoutes(application,kodein)
         get("/") {
             call.respondText("THIS WORKS")
+        }
+        get("/param/{id}") {
+            log.info(call.parameters.toString())
+            call.respondText("Param route")
         }
         get("/user/pista") {
             runBlocking {

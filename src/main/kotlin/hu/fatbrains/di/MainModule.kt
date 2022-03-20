@@ -1,5 +1,7 @@
 package hu.fatbrains.di
 import UserDataSource
+import hu.fatbrains.channel.ChannelStore
+import hu.fatbrains.channel.ChannelStoreImpl
 import hu.fatbrains.data.*
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
@@ -24,5 +26,8 @@ val kodein = Kodein {
     bind<MessageDataSource>() with singleton {
         val db by kodein.instance<CoroutineDatabase>()
         MessageDataSourceImpl(db)
+    }
+    bind<ChannelStore>() with singleton {
+        ChannelStoreImpl()
     }
 }
