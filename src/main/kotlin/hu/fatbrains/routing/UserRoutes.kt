@@ -4,6 +4,7 @@ import UserDataSource
 import hu.fatbrains.plugins.AuthConfig
 import io.ktor.application.*
 import io.ktor.auth.*
+import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
@@ -23,6 +24,19 @@ fun Route.userRoutes(application: Application,kodein: Kodein){
             }
             application.log.info("Requested users that have data containing name: $username, or email: $email")
             call.respond(users)
+        }
+        // endpoint to get user by id
+        post("/user/{userId}"){
+            val id = call.parameters["userId"]
+            if (id!=null){
+                val user = userDs.getUserById(id)
+                application.log.info("Requested user that has id: $id")
+                val userDTO= mapOf("id" to user?.id,"name" to user?.name,"email" to user?.email)
+                call.respond(userDTO)
+            }else{
+                application.log.warn("Bad request on route /user/{userId}, no userId provided")
+                call.respondText("Please provide and id",status = HttpStatusCode.BadRequest)
+            }
         }
     }
 }
