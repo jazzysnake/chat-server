@@ -1,0 +1,18 @@
+version: "3.3"
+services:
+  chat-server:
+    build: .
+    container_name: 'chat-server'
+    ports:
+      - '9090:9090'
+    environment:
+      - "MONGODB_CONNECTION=mongodb://mongo:27017"
+  db:
+    image: "mongo:latest"
+    hostname: "mongo"
+    container_name: 'mongo'
+    volumes:
+      - "mongodata:/data/db"
+
+volumes:
+  mongodata:

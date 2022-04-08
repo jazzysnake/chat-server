@@ -13,7 +13,12 @@ import org.litote.kmongo.reactivestreams.KMongo
 
 val kodein = Kodein {
     bind<CoroutineDatabase>() with singleton {
-        KMongo.createClient().coroutine.getDatabase("chat_db")
+        val connectionString = System.getenv("MONGODB_CONNECTION")
+        if (connectionString.isNotBlank()){
+            KMongo.createClient(connectionString= connectionString).coroutine.getDatabase("chat_db",)
+        }else{
+            KMongo.createClient().coroutine.getDatabase("chat_db",)
+        }
     }
     bind<UserDataSource>() with singleton {
         val db by kodein.instance<CoroutineDatabase>()

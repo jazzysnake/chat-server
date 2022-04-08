@@ -9,7 +9,8 @@ val jbcrypt_version: String by project
 plugins {
     application
     kotlin("jvm") version "1.6.10"
-                id("org.jetbrains.kotlin.plugin.serialization") version "1.6.10"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.6.10"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
 group = "hu.fatbrains"
@@ -47,4 +48,12 @@ dependencies {
     implementation("io.ktor:ktor-server-sessions:$ktor_version")
     implementation("io.ktor:ktor-auth:$ktor_version")
     implementation("org.mindrot:jbcrypt:$jbcrypt_version")
+}
+
+tasks {
+    shadowJar {
+        manifest {
+            attributes(Pair("Main-Class", "hu.fatbrains.ApplicationKt"))
+        }
+    }
 }
