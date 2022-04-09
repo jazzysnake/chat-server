@@ -62,7 +62,7 @@ fun Route.authRoutes(application: Application,kodein: Kodein){
             }
             else if(password.length<8){
                 application.log.info("Unsuccessful user registration, invalid password provided!")
-                call.respondText("Password must be longer than 8 characters!", status = HttpStatusCode.BadRequest)
+                call.respondText("Password must be at least 8 characters!", status = HttpStatusCode.BadRequest)
             }
             else if(userDs.getUserByEmail(email)==null){
                 val newUser= User(
