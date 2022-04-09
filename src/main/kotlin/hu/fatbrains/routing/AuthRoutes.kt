@@ -37,7 +37,7 @@ fun Route.authRoutes(application: Application,kodein: Kodein){
             } else {
                 call.sessions.set(session.copy(userId = user.id))
                 application.log.info("Logged-in with user:${user.id}")
-                call.respondText("Welcome ${user.name}", status = HttpStatusCode.OK)
+                call.respondText(user.id, status = HttpStatusCode.OK)
             }
         }else {
             application.log.info("Unsuccessful login attempt by user: ${user.id}")
@@ -56,15 +56,16 @@ fun Route.authRoutes(application: Application,kodein: Kodein){
         }
         else{
             if(userDs.getUserByEmail(email)==null){
-                userDs.registerUser(User(
+                val newUser= User(
                     name = username,
                     password = BCrypt.hashpw(password,BCrypt.gensalt()),
                     email = email,
                     contactIds = listOf(),
                     roomIds = listOf(),
-                ))
+                )
+                userDs.registerUser(newUser)
                 application.log.info("Successfully registered new user: $username")
-                call.respondText("Registered user: $username", status = HttpStatusCode.OK)
+                call.respondText(newUser.id, status = HttpStatusCode.OK)
             }
             else{
                 application.log.info("Unsuccessful user registration, email: $email already tied to an account.")
