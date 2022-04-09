@@ -55,7 +55,16 @@ fun Route.authRoutes(application: Application,kodein: Kodein){
             call.respondText("Provide a username a password and a valid email", status = HttpStatusCode.BadRequest)
         }
         else{
-            if(userDs.getUserByEmail(email)==null){
+            val regex = Regex("^(.+)@(\\S+)$")
+            if (!regex.containsMatchIn(email)){
+                application.log.info("Unsuccessful user registration, invalid email provided!")
+                call.respondText("$email is invalid!", status = HttpStatusCode.BadRequest)
+            }
+            else if(password.length<8){
+                application.log.info("Unsuccessful user registration, invalid password provided!")
+                call.respondText("Password must be longer than 8 characters!", status = HttpStatusCode.BadRequest)
+            }
+            else if(userDs.getUserByEmail(email)==null){
                 val newUser= User(
                     name = username,
                     password = BCrypt.hashpw(password,BCrypt.gensalt()),
