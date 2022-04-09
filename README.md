@@ -2,6 +2,14 @@
 
 _This server is made for the BME Kotlin course, and serves as a backend for a compose-multiplatfrom application_
 
+## Deployment
+
+If you have docker installed, from the root folder of the project run:
+```
+docker-compose up
+```
+This will build a jar from the source, start a mongodb container, and then start the server with the produced jar.
+
 ## Features
 
 - Personal chats
