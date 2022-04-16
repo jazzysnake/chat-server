@@ -62,7 +62,7 @@ fun Route.socketRoutes(application: Application,kodein: Kodein){
                             )
                             incoming.consumeEach {frame ->
                                 if (frame is Frame.Text){
-                                    application.log.info("Sending message")
+                                    application.log.info("Sending text message")
                                     channel.sendMessage(
                                         Message(
                                             senderId= userId,
@@ -70,6 +70,18 @@ fun Route.socketRoutes(application: Application,kodein: Kodein){
                                             type = MessageType.TEXT,
                                             timestamp = System.currentTimeMillis(),
                                             content = frame.readText()
+                                        )
+                                    )
+                                }
+                                else if (frame is Frame.Binary){
+                                    application.log.info("Sending binary message")
+                                    channel.sendMessage(
+                                        Message(
+                                            senderId= userId,
+                                            roomId = id,
+                                            type = MessageType.BINARY,
+                                            timestamp = System.currentTimeMillis(),
+                                            content = frame.data.toString(),
                                         )
                                     )
                                 }
