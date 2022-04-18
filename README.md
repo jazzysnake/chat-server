@@ -9,6 +9,7 @@ If you have docker installed, from the root folder of the project run:
 docker-compose up
 ```
 This will build a jar from the source, start a mongodb container, and then start the server with the produced jar.
+The client's source code can be found [here](https://github.com/tuku13/chat-app).
 
 ## Features
 
