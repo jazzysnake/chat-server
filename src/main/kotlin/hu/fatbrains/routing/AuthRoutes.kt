@@ -44,12 +44,13 @@ fun Route.authRoutes(application: Application,kodein: Kodein){
             call.respondText("Incorrect password", status = HttpStatusCode.Forbidden)
         }
     }
-    // Endpoint to register user with the provided params. (email, username, password)
+    // Endpoint to register user with the provided params. (email, username, password, image)
     post("/register") {
         val params = call.receiveParameters()
         val username = params["username"]
         val email = params["email"]
         val password = params["password"]
+        val img = params["image"]
         if (username==null||password==null||email==null){
             application.log.debug("Failed registration attempt, bad params provided. Params: $params")
             call.respondText("Provide a username a password and a valid email", status = HttpStatusCode.BadRequest)
@@ -68,6 +69,7 @@ fun Route.authRoutes(application: Application,kodein: Kodein){
                 val newUser= User(
                     name = username,
                     password = BCrypt.hashpw(password,BCrypt.gensalt()),
+                    img= img,
                     email = email,
                     contactIds = listOf(),
                     roomIds = listOf(),

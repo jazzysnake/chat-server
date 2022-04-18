@@ -81,7 +81,7 @@ fun Route.socketRoutes(application: Application,kodein: Kodein){
                                             roomId = id,
                                             type = MessageType.BINARY,
                                             timestamp = System.currentTimeMillis(),
-                                            content = frame.data.toString(),
+                                            content = java.util.Base64.getEncoder().encodeToString(frame.data),
                                         )
                                     )
                                 }

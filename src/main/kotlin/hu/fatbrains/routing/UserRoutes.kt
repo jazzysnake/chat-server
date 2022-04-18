@@ -20,7 +20,7 @@ fun Route.userRoutes(application: Application,kodein: Kodein){
             val username = params["username"].toString()
             val email = params["email"].toString()
             val users = userDs.getUsersByEmailOrName(email, username).map {
-                mapOf("id" to it.id,"name" to it.name,"email" to it.email)
+                mapOf("id" to it.id,"name" to it.name,"email" to it.email, "image" to it.img)
             }
             application.log.info("Requested users that have data containing name: $username, or email: $email")
             call.respond(users)
@@ -31,7 +31,7 @@ fun Route.userRoutes(application: Application,kodein: Kodein){
             if (id!=null){
                 val user = userDs.getUserById(id)
                 application.log.info("Requested user that has id: $id")
-                val userDTO= mapOf("id" to user?.id,"name" to user?.name,"email" to user?.email)
+                val userDTO= mapOf("id" to user?.id,"name" to user?.name,"email" to user?.email, "image" to user?.img)
                 call.respond(userDTO)
             }else{
                 application.log.warn("Bad request on route /user/{userId}, no userId provided")

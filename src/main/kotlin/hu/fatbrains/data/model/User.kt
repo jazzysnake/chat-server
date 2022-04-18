@@ -6,6 +6,7 @@ import org.bson.types.ObjectId
 data class User(
     @BsonId
     val id:String =ObjectId().toString(),
+    val img:String?,
     val name:String,
     val email:String,
     val password:String,
